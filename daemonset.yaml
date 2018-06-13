@@ -14,6 +14,23 @@ spec:
           image: awprice/gcs-flexvolume
           command:
             - /init.sh
+            - /flexvolume-hostbin/
+            - /flexvolume-plugindir/
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /flexvolume-plugindir
+              name: flexvolume-plugindir
+            - mountPath: /flexvolume-hostbin
+              name: flexvolume-hostbin
       containers:
         - name: pause
           image: gcr.io/google_containers/pause
+      volumes:
+        - name: flexvolume-plugindir
+          hostPath:
+            path: /home/kubernetes/flexvolume/
+        - name: flexvolume-hostbin
+          hostPath:
+            path: /home/kubernetes/bin/
+
