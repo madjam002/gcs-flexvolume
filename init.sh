@@ -6,5 +6,5 @@ set -ex
 cp $(which gcsfuse) $1
 
 # Install the driver onto the host
-mkdir -p /host/volume-plugin-dir/awprice~gcs/
-cp $(which gcsfuse-driver) $2
+mkdir -p $2/awprice~gcs/
+cp $(which gcsfuse-driver) $2/awprice~gcs/
