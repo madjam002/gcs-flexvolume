@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: gcs-flexvolume
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: gcs-flexvolume
+  template:
+    spec:
+      initContainers:
+        - name: install
+          image: awprice/gcs-flexvolume
+          command:
+            - /init.sh
+      containers:
+        - name: pause
+          image: gcr.io/google_containers/pause
