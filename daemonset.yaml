@@ -8,10 +8,13 @@ spec:
     matchLabels:
       app: gcs-flexvolume
   template:
+    metadata:
+      labels:
+        app: gcs-flexvolume
     spec:
       initContainers:
         - name: install
-          image: awprice/gcs-flexvolume
+          image: outlaw11a/gcs-flexvolume
           command:
             - /init.sh
             - /flexvolume-hostbin/
