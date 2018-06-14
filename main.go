@@ -53,7 +53,7 @@ func Mount(target string, options map[string]string) interface{} {
 		bucket,
 		target,
 	}
-	mountCmd := exec.Command("gcsfuse", args...)
+	mountCmd := exec.Command("/home/kubernetes/bin/gcsfuse", args...)
 	err = mountCmd.Start()
 	if err != nil {
 		return makeResponse("Failure", err.Error())
