@@ -37,21 +37,15 @@ func Mount(target string, options map[string]string) interface{} {
 	bucket := options["bucket"]
 	subPath := options["subPath"]
 
-	printDebug("target", target)
-	printDebug("bucket", bucket)
-	printDebug("subPath", subPath)
-
 	dirMode, ok := options["dirMode"]
 	if !ok {
 		dirMode = "0755"
 	}
-	printDebug("dirMode", dirMode)
 
 	fileMode, ok := options["fileMode"]
 	if !ok {
 		fileMode = "0644"
 	}
-	printDebug("fileMode", fileMode)
 
 	mountPath := path.Join("/home/kubernetes/mounts/", bucket)
 
@@ -67,13 +61,11 @@ func Mount(target string, options map[string]string) interface{} {
 			bucket,
 			mountPath,
 		}
-		printDebug("args", args)
 		mountCmd := exec.Command("gcsfuse", args...)
 		mountCmd.Start()
 	}
 
 	srcPath := path.Join(mountPath, subPath)
-	printDebug("srcPath", srcPath)
 
 	// Create subpath if it does not exist
 	intDirMode, _ := strconv.ParseUint(dirMode, 8, 32)
@@ -107,10 +99,6 @@ func printJSON(data interface{}) {
 		panic(err)
 	}
 	fmt.Printf("%s", string(jsonBytes))
-}
-
-func printDebug(a ...interface{}) {
-	fmt.Fprintln(os.Stderr, a)
 }
 
 func main() {
