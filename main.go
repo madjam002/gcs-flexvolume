@@ -62,6 +62,7 @@ func Mount(target string, options map[string]string) interface{} {
 			mountPath,
 		}
 		mountCmd := exec.Command("/home/kubernetes/bin/gcsfuse", args...)
+		mountCmd.Env = append(os.Environ(), "PATH=$PATH:/home/kubernetes/bin")
 		if err := mountCmd.Start(); err != nil {
 			return makeResponse("Failure", err.Error())
 		}
