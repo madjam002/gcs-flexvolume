@@ -53,7 +53,7 @@ func Mount(target string, options map[string]string) interface{} {
 	}
 	printDebug("fileMode", fileMode)
 
-	mountPath := path.Join("/mnt/gcsfuse", bucket)
+	mountPath := path.Join("/home/kubernetes/mounts/", bucket)
 
 	if !isMountPoint(mountPath) {
 		os.MkdirAll(mountPath, 0755)
@@ -64,9 +64,6 @@ func Mount(target string, options map[string]string) interface{} {
 			dirMode,
 			"--file-mode",
 			fileMode,
-			"--debug_fuse",
-			"--debug_gcs",
-			"--debug_http",
 			bucket,
 			mountPath,
 		}
