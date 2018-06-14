@@ -36,12 +36,6 @@ func Mount(target string, options map[string]string) interface{} {
 		fileMode = "0644"
 	}
 
-	// Remove the target
-	err := os.Remove(target)
-	if err != nil {
-		return makeResponse("Failure", err.Error())
-	}
-
 	// Use the target as the mount point for gcsfuse
 	args := []string{
 		"-o",
@@ -54,7 +48,7 @@ func Mount(target string, options map[string]string) interface{} {
 		target,
 	}
 	mountCmd := exec.Command("/home/kubernetes/bin/gcsfuse", args...)
-	err = mountCmd.Start()
+	err := mountCmd.Start()
 	if err != nil {
 		return makeResponse("Failure", err.Error())
 	}
