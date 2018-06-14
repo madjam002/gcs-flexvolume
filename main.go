@@ -50,7 +50,7 @@ func Mount(target string, options map[string]string) interface{} {
 	mountPath := path.Join("/home/kubernetes/mounts/", bucket)
 
 	if !isMountPoint(mountPath) {
-		os.MkdirAll(mountPath, 0755)
+		os.MkdirAll(mountPath, 0777)
 		args := []string{
 			"-o",
 			"nonempty",
