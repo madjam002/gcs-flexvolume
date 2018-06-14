@@ -4,9 +4,7 @@ import (
 	"os"
 	"fmt"
 	"encoding/json"
-	"path"
 	"os/exec"
-	"strconv"
 )
 
 func makeResponse(status, message string) map[string]interface{} {
@@ -14,15 +12,6 @@ func makeResponse(status, message string) map[string]interface{} {
 		"status":  status,
 		"message": message,
 	}
-}
-
-func isMountPoint(path string) bool {
-	cmd := exec.Command("mountpoint", path)
-	err := cmd.Run()
-	if err != nil {
-		return false
-	}
-	return true
 }
 
 func Init() interface{} {
@@ -35,7 +24,7 @@ func Init() interface{} {
 
 func Mount(target string, options map[string]string) interface{} {
 	bucket := options["bucket"]
-	subPath := options["subPath"]
+	// subPath := options["subPath"]
 
 	dirMode, ok := options["dirMode"]
 	if !ok {
@@ -47,37 +36,25 @@ func Mount(target string, options map[string]string) interface{} {
 		fileMode = "0644"
 	}
 
-	mountPath := path.Join("/home/kubernetes/mounts/", bucket)
-
-	if !isMountPoint(mountPath) {
-		os.MkdirAll(mountPath, 0777)
-		args := []string{
-			"-o",
-			"nonempty",
-			"--dir-mode",
-			dirMode,
-			"--file-mode",
-			fileMode,
-			bucket,
-			mountPath,
-		}
-		mountCmd := exec.Command("gcsfuse", args...)
-		mountCmd.Start()
-	}
-
-	srcPath := path.Join(mountPath, subPath)
-
-	// Create subpath if it does not exist
-	intDirMode, _ := strconv.ParseUint(dirMode, 8, 32)
-	os.MkdirAll(srcPath, os.FileMode(intDirMode))
-
-	// Now we rmdir the target, and then make a symlink to it!
+	// Remove the target
 	err := os.Remove(target)
 	if err != nil {
 		return makeResponse("Failure", err.Error())
 	}
 
-	err = os.Symlink(srcPath, target)
+	// Use the target as the mount point for gcsfuse
+	args := []string{
+		"-o",
+		"nonempty",
+		"--dir-mode",
+		dirMode,
+		"--file-mode",
+		fileMode,
+		bucket,
+		target,
+	}
+	mountCmd := exec.Command("gcsfuse", args...)
+	err = mountCmd.Start()
 	if err != nil {
 		return makeResponse("Failure", err.Error())
 	}
@@ -86,7 +63,8 @@ func Mount(target string, options map[string]string) interface{} {
 }
 
 func Unmount(target string) interface{} {
-	err := os.Remove(target)
+	umountCmd := exec.Command("umount", target)
+	err := umountCmd.Start()
 	if err != nil {
 		return makeResponse("Failure", err.Error())
 	}
