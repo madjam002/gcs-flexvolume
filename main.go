@@ -122,6 +122,8 @@ func main() {
 		opts := make(map[string]string)
 		json.Unmarshal([]byte(optsString), &opts)
 		printJSON(Mount(os.Args[2], opts))
+	case "unmount":
+		printJSON(Unmount(os.Args[2]))
 	default:
 		printJSON(makeResponse("Not supported", fmt.Sprintf("Operation %s is not supported", action)))
 	}
