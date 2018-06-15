@@ -54,6 +54,8 @@ func Mount(target string, options map[string]string) interface{} {
 		args := []string{
 			"-o",
 			"nonempty",
+			"-o",
+			"allow_other",
 			"--dir-mode",
 			dirMode,
 			"--file-mode",
