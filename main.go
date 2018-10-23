@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"encoding/json"
-	"path"
+	"fmt"
+	"os"
 	"os/exec"
+	"path"
 	"strconv"
 )
 
@@ -52,7 +52,7 @@ func Mount(target string, options map[string]string) interface{} {
 	if !isMountPoint(mountPath) {
 		os.MkdirAll(mountPath, 0777)
 		args := []string{
-			"-o",
+			"--implicit-dirs", "-o",
 			"nonempty",
 			"-o",
 			"allow_other",
